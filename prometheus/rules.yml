@@ -1,0 +1,89 @@
+groups:
+  - name: infrastructure
+    rules:
+
+      - alert: CPUElevé
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+          domain: infra
+        annotations:
+          summary: "CPU élevé sur {{ $labels.instance }}"
+          description: "Le CPU dépasse 80% depuis 2 minutes."
+
+      - alert: MémoireInsuffisante
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 < 15
+        for: 2m
+        labels:
+          severity: critical
+          domain: infra
+        annotations:
+          summary: "Mémoire critique sur {{ $labels.instance }}"
+          description: "Moins de 15% de RAM disponible."
+
+      - alert: DisquePresquePlein
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 20
+        for: 5m
+        labels:
+          severity: warning
+          domain: infra
+        annotations:
+          summary: "Disque presque plein sur {{ $labels.instance }}"
+          description: "Moins de 20% d'espace disque disponible."
+
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          domain: infra
+        annotations:
+          summary: "Service {{ $labels.job }} est DOWN"
+          description: "Le service {{ $labels.job }} ne répond plus depuis 1 minute."
+
+  - name: iot
+    rules:
+
+      - alert: TempératureCritique
+        expr: mqtt_temperature > 40
+        for: 1m
+        labels:
+          severity: critical
+          domain: iot
+        annotations:
+          summary: "Température critique capteur {{ $labels.device_id }}"
+          description: "Température dépasse 40°C."
+
+      - alert: BatterieFaible
+        expr: mqtt_battery < 20
+        for: 2m
+        labels:
+          severity: warning
+          domain: iot
+        annotations:
+          summary: "Batterie faible capteur {{ $labels.device_id }}"
+          description: "Niveau batterie sous 20%."
+
+  - name: applicatif
+    rules:
+
+      - alert: TauxErreurÉlevé
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 5
+        for: 2m
+        labels:
+          severity: critical
+          domain: applicatif
+        annotations:
+          summary: "Taux d'erreur élevé sur le microservice"
+          description: "Plus de 5% de requêtes en erreur 5xx."
+
+      - alert: LatenceÉlevée
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 2m
+        labels:
+          severity: warning
+          domain: applicatif
+        annotations:
+          summary: "Latence p95 élevée sur le microservice"
+          description: "95% des requêtes prennent plus d'1 seconde."

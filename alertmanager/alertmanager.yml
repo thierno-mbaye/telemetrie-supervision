@@ -1,0 +1,47 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['domain', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'default'
+  routes:
+    - match:
+        domain: infra
+      receiver: 'infra-receiver'
+    - match:
+        domain: iot
+      receiver: 'iot-receiver'
+    - match:
+        domain: applicatif
+      receiver: 'applicatif-receiver'
+
+receivers:
+  - name: 'default'
+    webhook_configs:
+      - url: 'http://localhost:5001/alerts'
+        send_resolved: true
+
+  - name: 'infra-receiver'
+    webhook_configs:
+      - url: 'http://localhost:5001/alerts/infra'
+        send_resolved: true
+
+  - name: 'iot-receiver'
+    webhook_configs:
+      - url: 'http://localhost:5001/alerts/iot'
+        send_resolved: true
+
+  - name: 'applicatif-receiver'
+    webhook_configs:
+      - url: 'http://localhost:5001/alerts/applicatif'
+        send_resolved: true
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['instance']

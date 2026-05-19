@@ -1,0 +1,49 @@
+{
+  "title": "IoT — Supervision capteurs",
+  "uid": "iot-001",
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "Température par capteur (°C)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "targets": [{
+        "expr": "mqtt_consumer_temperature",
+        "legendFormat": "{{device_id}} — {{location}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Niveau batterie (%)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "targets": [{
+        "expr": "mqtt_consumer_battery",
+        "legendFormat": "{{device_id}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Vibration",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "targets": [{
+        "expr": "mqtt_consumer_vibration",
+        "legendFormat": "{{device_id}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Pression (hPa)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "targets": [{
+        "expr": "mqtt_consumer_pression",
+        "legendFormat": "{{device_id}}"
+      }],
+      "datasource": "Prometheus"
+    }
+  ],
+  "schemaVersion": 38,
+  "version": 1
+}
