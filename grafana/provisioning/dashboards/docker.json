@@ -1,0 +1,39 @@
+{
+  "title": "Docker — Métriques conteneurs",
+  "uid": "docker-001",
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "CPU par conteneur (%)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "targets": [{
+        "expr": "rate(container_cpu_usage_seconds_total{name!=''}[2m]) * 100",
+        "legendFormat": "{{name}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Mémoire par conteneur (MB)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "targets": [{
+        "expr": "container_memory_usage_bytes{name!=''} / 1024 / 1024",
+        "legendFormat": "{{name}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Conteneurs actifs",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 24, "x": 0, "y": 8},
+      "targets": [{
+        "expr": "count(container_last_seen{name!=''})",
+        "legendFormat": "Conteneurs actifs"
+      }],
+      "datasource": "Prometheus"
+    }
+  ],
+  "schemaVersion": 38,
+  "version": 1
+}

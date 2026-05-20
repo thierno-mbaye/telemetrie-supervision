@@ -59,6 +59,16 @@ IoT — Supervision capteurs :
 - Vibration avec détection de pics
 - Pression atmosphérique (hPa)
 
+Docker — Métriques conteneurs :
+- CPU par conteneur (%)
+- Mémoire par conteneur (MB)
+- Nombre de conteneurs actifs
+
+Synthèse — Vue multi-domaines :
+- Vue unifiée des 3 domaines sur une seule page
+- Services UP/DOWN, CPU, RAM, IoT, microservice
+
+
 ---
 
 ## 🚨 Règles d'alerting (8 règles actives)
@@ -108,6 +118,15 @@ telemetrie/
     └── Dockerfile
 
 ---
+
+## 🔌 Ajouter une nouvelle source (BF-12)
+
+Sans modifier l'architecture, publier sur un nouveau topic MQTT :
+
+    mosquitto_pub -h localhost -t "sensors/capteur-XX/telemetry" \
+      -m '{"device_id":"capteur-XX","location":"ma-location","temperature":22.0,"pression":1013.0,"vibration":0.5,"battery":90.0,"timestamp":1234567890}'
+
+Le nouveau capteur apparaît automatiquement dans Grafana en moins de 30 secondes.
 
 ## 👨‍💻 Auteur
 

@@ -1,0 +1,79 @@
+{
+  "title": "Synthèse — Vue multi-domaines",
+  "uid": "synthese-001",
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "Services UP/DOWN",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 0},
+      "targets": [{
+        "expr": "up",
+        "legendFormat": "{{job}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "CPU Hôte (%)",
+      "type": "gauge",
+      "gridPos": {"h": 4, "w": 8, "x": 8, "y": 0},
+      "targets": [{
+        "expr": "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode='idle'}[2m])) * 100)",
+        "legendFormat": "CPU"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "RAM disponible (%)",
+      "type": "gauge",
+      "gridPos": {"h": 4, "w": 8, "x": 16, "y": 0},
+      "targets": [{
+        "expr": "(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
+        "legendFormat": "RAM"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Température capteurs IoT (°C)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "targets": [{
+        "expr": "mqtt_consumer_temperature",
+        "legendFormat": "{{device_id}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Batterie capteurs IoT (%)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "targets": [{
+        "expr": "mqtt_consumer_battery",
+        "legendFormat": "{{device_id}}"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Taux d'erreur microservice (%)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "targets": [{
+        "expr": "rate(http_requests_total{status=~'5..'}[5m]) / rate(http_requests_total[5m]) * 100",
+        "legendFormat": "Erreurs 5xx %"
+      }],
+      "datasource": "Prometheus"
+    },
+    {
+      "title": "Latence p95 microservice (s)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "targets": [{
+        "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+        "legendFormat": "Latence p95"
+      }],
+      "datasource": "Prometheus"
+    }
+  ],
+  "schemaVersion": 38,
+  "version": 1
+}
