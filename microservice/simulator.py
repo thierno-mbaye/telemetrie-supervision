@@ -4,7 +4,7 @@ import time
 import random
 import math
 
-BROKER = "mosquitto"
+BROKER = __import__("os").getenv("MQTT_BROKER", "mosquitto")
 PORT = 1883
 
 CAPTEURS = [
